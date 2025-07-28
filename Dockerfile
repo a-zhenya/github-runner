@@ -1,0 +1,23 @@
+FROM ubuntu:latest
+
+LABEL maintainer="Evgeny A"
+LABEL version=1.0
+
+ENV ACTIONS_RUNNER_VERSION=2.322.0
+ENV ACTIONS_RUNNER_SHA=b13b784808359f31bc79b08a191f5f83757852957dd8fe3dbfcc38202ccf5768
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get autoclean -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl git sudo gzip ca-certificates software-properties-common \
+    && rm -rf /var/lib/apt/lists/* 
+RUN useradd -M -d / runner && install -o runner -g runner -d /actions-runner
+WORKDIR /actions-runner
+RUN sudo -u runner curl -sL -o actions-runner.tar.gz \
+    https://github.com/actions/runner/releases/download/v${ACTIONS_RUNNER_VERSION}/actions-runner-linux-x64-${ACTIONS_RUNNER_VERSION}.tar.gz \
+    && sudo -u runner echo "${ACTIONS_RUNNER_SHA}  actions-runner.tar.gz" | sha256sum -c - \
+    && sudo -u runner tar xzf ./actions-runner.tar.gz \
+    && sudo -u runner rm -f ./actions-runner.tar.gz 
+COPY entrypoint.sh ./
+USER runner
+CMD ["/bin/sh", "entrypoint.sh"]
