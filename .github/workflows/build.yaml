@@ -13,14 +13,17 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | \
             docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: Pull Docker image
-        run: |
-          docker pull ghcr.io/${{ github.repository_owner }}/github-runner:latest \
-          && docker tag ghcr.io/${{ github.repository_owner }}/github-runner:latest github-runner \
-          || true
-      - name: Build image
-        run: |
-          docker build -t github-runner . \
-          && docker tag github-runner ghcr.io/${{ github.repository_owner }}/github-runner:latest
-      - name: Push image
-        run: docker push ghcr.io/${{ github.repository_owner }}/github-runner:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push Docker image with caching
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          pull: true
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/github-action-runner:latest
+            ghcr.io/${{ github.repository_owner }}/github-action-runner:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
