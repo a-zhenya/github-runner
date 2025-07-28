@@ -1,10 +1,26 @@
 name: Build Docker Image
 on: push
+permissions:
+  contents: read
+  packages: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Log in to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | \
+            docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Pull Docker image
+        run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/github-runner:latest \
+          && docker tag ghcr.io/${{ github.repository_owner }}/github-runner:latest github-runner \
+          || true
       - name: Build image
-        run: docker build -t my-image .
+        run: |
+          docker build -t github-runner . \
+          && docker tag github-runner ghcr.io/${{ github.repository_owner }}/github-runner:latest
+      - name: Push image
+        run: docker push ghcr.io/${{ github.repository_owner }}/github-runner:latest
