@@ -3,8 +3,8 @@ FROM ubuntu:latest
 LABEL maintainer="Evgeny A"
 LABEL version=1.0
 
-ENV ACTIONS_RUNNER_VERSION=2.322.0
-ENV ACTIONS_RUNNER_SHA=b13b784808359f31bc79b08a191f5f83757852957dd8fe3dbfcc38202ccf5768
+ENV ACTIONS_RUNNER_VERSION=2.326.0
+ENV ACTIONS_RUNNER_SHA=9c74af9b4352bbc99aecc7353b47bcdfcd1b2a0f6d15af54a99f54a0c14a1de8
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
