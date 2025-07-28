@@ -9,8 +9,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* 
 RUN useradd -M -d / runner && install -o runner -g runner -d /wrk
 WORKDIR /wrk
-ENV ACTIONS_RUNNER_VERSION=2.322.0
-ENV ACTIONS_RUNNER_SHA=b13b784808359f31bc79b08a191f5f83757852957dd8fe3dbfcc38202ccf5768
+ENV ACTIONS_RUNNER_VERSION=2.326.0
+ENV ACTIONS_RUNNER_SHA=9c74af9b4352bbc99aecc7353b47bcdfcd1b2a0f6d15af54a99f54a0c14a1de8
 RUN sudo -u runner curl -sL -o actions-runner.tar.gz \
     https://github.com/actions/runner/releases/download/v${ACTIONS_RUNNER_VERSION}/actions-runner-linux-x64-${ACTIONS_RUNNER_VERSION}.tar.gz \
     && sudo -u runner echo "${ACTIONS_RUNNER_SHA}  actions-runner.tar.gz" | sha256sum -c - \
