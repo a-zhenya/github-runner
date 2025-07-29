@@ -1,23 +1,22 @@
-FROM ubuntu:20.04
+FROM debian:bookworm-slim
 
-LABEL maintainer="Evgeny A"
-LABEL version=1.0
+LABEL maintainer="Evgeny A" version="1.0"
 
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y curl git sudo gzip ca-certificates software-properties-common \
-    && DEBIAN_FRONTEND=noninteractive apt-get autoclean -y \
-    && rm -rf /var/lib/apt/lists/* 
-RUN useradd -M -d / runner && install -o runner -g runner -d /wrk
+    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes curl git sudo gzip ca-certificates software-properties-common \
+    && DEBIAN_FRONTEND=noninteractive apt-get clean --yes \
+    && rm -rf /var/lib/apt/lists/*
+RUN useradd -M -d / -s /sbin/nologin runner && install -o runner -g runner -d /wrk
 
 WORKDIR /wrk
 
-ENV ACTIONS_RUNNER_VERSION=2.326.0
-ENV ACTIONS_RUNNER_SHA=9c74af9b4352bbc99aecc7353b47bcdfcd1b2a0f6d15af54a99f54a0c14a1de8
+ENV ACTIONS_RUNNER_VERSION=2.327.1
+ENV ACTIONS_RUNNER_SHA=d68ac1f500b747d1271d9e52661c408d56cffd226974f68b7dc813e30b9e0575
 RUN bash -c "curl -sL \
     https://github.com/actions/runner/releases/download/v${ACTIONS_RUNNER_VERSION}/actions-runner-linux-x64-${ACTIONS_RUNNER_VERSION}.tar.gz \
     | tee >(sudo -u runner tar xzf -) \
     | sha256sum | awk -v expected=$ACTIONS_RUNNER_SHA '{ if (\$1 != expected) { exit 1 } }'"
 
-COPY entrypoint.sh ./
+COPY --chown=runner:runner entrypoint.sh ./
 USER runner
 CMD ["/bin/sh", "entrypoint.sh"]
