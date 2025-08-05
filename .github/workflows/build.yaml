@@ -20,8 +20,6 @@ jobs:
       - name: Build and push Docker image with caching
         uses: docker/build-push-action@v5
         with:
-          pull: true
-          push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/github-runner:latest
             ghcr.io/${{ github.repository_owner }}/github-runner:${{ env.SHORT_SHA }}
