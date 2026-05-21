@@ -10,8 +10,8 @@ RUN useradd -M -d / -s /sbin/nologin runner && install -o runner -g runner -d /w
 
 WORKDIR /wrk
 
-ENV ACTIONS_RUNNER_VERSION=2.327.1
-ENV ACTIONS_RUNNER_SHA=d68ac1f500b747d1271d9e52661c408d56cffd226974f68b7dc813e30b9e0575
+ENV ACTIONS_RUNNER_VERSION=2.334.0
+ENV ACTIONS_RUNNER_SHA=048024cd2c848eb6f14d5646d56c13a4def2ae7ee3ad12122bee960c56f3d271
 RUN bash -c "curl -sL \
     https://github.com/actions/runner/releases/download/v${ACTIONS_RUNNER_VERSION}/actions-runner-linux-x64-${ACTIONS_RUNNER_VERSION}.tar.gz \
     | tee >(sudo -u runner tar xzf -) \
